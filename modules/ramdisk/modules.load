@@ -127,3 +127,5 @@ qrtr-gunyah.ko
 bootinfo.ko
 debug_ext.ko
 swinfo.ko
+xiaomi_touch.ko
+nt36532_touch.ko
