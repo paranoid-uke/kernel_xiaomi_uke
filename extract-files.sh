@@ -116,6 +116,20 @@ for module in $(find $out/lib -name "*.ko" -o -name "modules.load*" -o -name "mo
 	cp $module ./modules/vendor/
 done
 
+# Ensure touchscreen modules are present in ramdisk for recovery touch
+for touch_mod in xiaomi_touch.ko nt36532_touch.ko; do
+	if [[ -f ./modules/vendor/$touch_mod ]]; then
+		cp ./modules/vendor/$touch_mod ./modules/ramdisk/
+		if ! grep -q "^$touch_mod" ./modules/ramdisk/modules.load.recovery 2>/dev/null; then
+			echo "$touch_mod" >> ./modules/ramdisk/modules.load.recovery
+		fi
+		if ! grep -q "^$touch_mod" ./modules/ramdisk/modules.load 2>/dev/null; then
+			echo "$touch_mod" >> ./modules/ramdisk/modules.load
+		fi
+	fi
+done
+
+
 # SYSTEM_DLKM
 echo "Extracting the dlkm kernel modules"
 out=$extract_out/system_dlkm
