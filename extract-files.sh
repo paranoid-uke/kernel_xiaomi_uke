@@ -116,6 +116,11 @@ for module in $(find $out/lib -name "*.ko" -o -name "modules.load*" -o -name "mo
 	cp $module ./modules/vendor/
 done
 
+# Defer nanosic_driver until after firmware_mounts_complete deletes /dev/.booting
+if [[ -f ./modules/vendor/modules.blocklist ]] && ! grep -q "^blocklist nanosic_driver" ./modules/vendor/modules.blocklist; then
+	echo "blocklist nanosic_driver" >> ./modules/vendor/modules.blocklist
+fi
+
 # Ensure touchscreen modules are present in ramdisk for recovery touch
 for touch_mod in xiaomi_touch.ko nt36532_touch.ko; do
 	if [[ -f ./modules/vendor/$touch_mod ]]; then
